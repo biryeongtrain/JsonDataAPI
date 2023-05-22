@@ -1,0 +1,88 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+plugins {
+    id ("java")
+    id ("io.freefair.lombok") version "8.0.1"
+    id ("com.github.johnrengelman.shadow") version "7.1.0"
+}
+
+group = 'net.biryeongtrain'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+}
+
+dependencies {
+    implementation("org.jetbrains:annotations:24.0.1")
+
+    compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
+    testImplementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2")
+
+    compileOnly("org.projectlombok:lombok:1.18.26")
+    annotationProcessor("org.projectlombok:lombok:1.18.26")
+    testCompileOnly("org.projectlombok:lombok:1.18.26")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.26")
+
+    //Reflections
+    implementation("org.reflections:reflections:0.9.12")
+
+    //testNG
+    testImplementation("org.testng:testng:7.7.0")
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('paper-plugin.yml') {
+        expand props
+    }
+}
+
+tasks.register('copyPluginJar', Copy) {
+    dependsOn("shadowJar")
+
+    from("build/libs") {
+        include("jsonDataAPI-1.0-SNAPSHOT-all.jar")
+    }
+
+    var serverPluginsDir = {
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            "C:/Users/kb100/Desktop/paper.1.19.3/plugins" // Windows의 경우 서버 plugins 폴더 경로
+        } else {
+            //적당히 자기 테섭 경로로 바꿔서 쓰세요
+            "/Users/meminsu/Desktop/paper/plugins" // 다른 OS의 경우 서버 plugins 폴더 경로
+        }
+    }
+    into(serverPluginsDir)
+}

@@ -1,0 +1,4 @@
+name: JsonDataAPI
+version: '${version}'
+main: net.biryeongtrain.jsonDataAPI.Untitled
+api-version: 1.19
