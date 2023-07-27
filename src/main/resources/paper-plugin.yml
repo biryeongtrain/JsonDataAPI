@@ -1,4 +1,4 @@
 name: JsonDataAPI
 version: '${version}'
-main: net.biryeongtrain.jsonDataAPI.Untitled
+main: net.biryeongtrain.jsonDataAPI.JsonDataAPI
 api-version: 1.19

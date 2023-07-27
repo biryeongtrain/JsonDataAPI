@@ -4,6 +4,9 @@ plugins {
     id ("java")
     id ("io.freefair.lombok") version "8.0.1"
     id ("com.github.johnrengelman.shadow") version "7.1.0"
+    id ("xyz.jpenilla.run-paper") version "2.0.1"
+    id "de.undercouch.download" version "5.0.1"
+    id("io.papermc.paperweight.userdev") version "1.5.5"
 }
 
 group = 'net.biryeongtrain'
@@ -23,22 +26,12 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains:annotations:24.0.1")
-
-    compileOnly "io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT"
-    testImplementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2")
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
-    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2")
+    paperweight.paperDevBundle("1.19.4-R0.1-SNAPSHOT")
 
     compileOnly("org.projectlombok:lombok:1.18.26")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     testCompileOnly("org.projectlombok:lombok:1.18.26")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.26")
-
-    //Reflections
-    implementation("org.reflections:reflections:0.9.12")
 
     //testNG
     testImplementation("org.testng:testng:7.7.0")

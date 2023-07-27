@@ -1,7 +1,12 @@
 package net.biryeongtrain.jsonDataAPI.impl.gson;
 
 import com.google.gson.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -28,11 +33,15 @@ public class BaseGson {
             .registerTypeHierarchyAdapter(Enchantment.class, new RegistrySerializer<>(Registry.ENCHANTMENT))
             .registerTypeHierarchyAdapter(Sound.class, new RegistrySerializer<>(Registry.SOUNDS))
             .registerTypeHierarchyAdapter(EntityType.class, new RegistrySerializer<>(Registry.ENTITY_TYPE))
-            .registerTypeHierarchyAdapter(TrimMaterial.class, new RegistrySerializer<>(Registry.TRIM_MATERIAL))
-            .registerTypeHierarchyAdapter(TrimPattern.class, new RegistrySerializer<>(Registry.TRIM_MATERIAL))
+//            .registerTypeHierarchyAdapter(TrimMaterial.class, new RegistrySerializer<>(Registry.TRIM_MATERIAL))
+//            .registerTypeHierarchyAdapter(TrimPattern.class, new RegistrySerializer<>(Registry.TRIM_MATERIAL))
             .registerTypeHierarchyAdapter(Villager.Profession.class, new RegistrySerializer<>(Registry.VILLAGER_PROFESSION))
             .registerTypeHierarchyAdapter(Villager.Type.class, new RegistrySerializer<>(Registry.VILLAGER_TYPE))
             .registerTypeHierarchyAdapter(PotionEffectType.class, new RegistrySerializer<>(Registry.POTION_EFFECT_TYPE))
+
+            .registerTypeHierarchyAdapter(ItemStack.class, new CodecSerializer<>(ItemStack.CODEC))
+            .registerTypeHierarchyAdapter(BlockPos.class, new CodecSerializer<>(BlockPos.CODEC))
+            .registerTypeHierarchyAdapter(Vec3.class, new CodecSerializer<>(Vec3.CODEC))
 
             .registerTypeHierarchyAdapter(Location.class, new LocationSerializer())
             .create();
@@ -82,6 +91,29 @@ public class BaseGson {
                 }
             });
             return jsonObject;
+        }
+    }
+
+    private record CodecSerializer<T>(Codec<T> codec) implements JsonSerializer<T>,JsonDeserializer<T> {
+
+        @Override
+        public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            try {
+                return this.codec.decode(JsonOps.INSTANCE, json).getOrThrow(false, (x) -> {
+                }).getFirst();
+            } catch (Throwable e) {
+                return null;
+            }
+        }
+
+        @Override
+        public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
+            try {
+                return src != null ? this.codec.encodeStart(JsonOps.INSTANCE, src).getOrThrow(false, (x) -> {
+                }) :JsonNull.INSTANCE;
+            } catch (Throwable e) {
+                return JsonNull.INSTANCE;
+            }
         }
     }
 }
