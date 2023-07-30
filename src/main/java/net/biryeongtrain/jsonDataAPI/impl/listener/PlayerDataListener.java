@@ -13,9 +13,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import static net.biryeongtrain.jsonDataAPI.api.DataHandler.MANAGER;
+
 @SuppressWarnings("unchecked")
 public class PlayerDataListener implements Listener {
-    private static final DataManager MANAGER = new DataManagerImpl();
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoined(PlayerJoinEvent event) {
         Player player = event.getPlayer();

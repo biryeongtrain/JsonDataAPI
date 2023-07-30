@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class DataHandler {
-    private static final DataManager MANAGER;
+    public static final DataManager MANAGER;
     private static final Set<DataStorage<?>> STORAGE = new HashSet<>();
 
     /**

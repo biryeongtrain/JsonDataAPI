@@ -7,8 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Logger;
 
 public final class JsonDataAPI extends JavaPlugin {
-    @Getter
-    private static Logger logger;
+    public static Logger logger;
 
     @Override
     public void onEnable() {

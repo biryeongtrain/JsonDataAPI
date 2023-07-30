@@ -1,8 +1,9 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
-    id ("java")
-    id ("io.freefair.lombok") version "8.0.1"
+    id "java-library"
+    id "net.kyori.indra" version "3.1.2"
+//    id ("io.freefair.lombok") version "8.0.1"
     id ("com.github.johnrengelman.shadow") version "7.1.0"
     id ("xyz.jpenilla.run-paper") version "2.0.1"
     id "de.undercouch.download" version "5.0.1"
@@ -51,6 +52,7 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
     }
+    it.options.encoding = "UTF-8"
 }
 
 processResources {

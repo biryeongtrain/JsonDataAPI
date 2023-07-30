@@ -20,9 +20,9 @@ public interface DataStorage<T> {
     @Nullable
     T load(Server server, UUID player);
 
-    default Path getPath(Server server, Player player) {
-        return getPath(server, player.getUniqueId());
+    default Path getPath(Player player) {
+        return getPath(player.getUniqueId());
     }
 
-    Path getPath(Server server, UUID uuid);
+    Path getPath(UUID uuid);
 }
